@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="ja"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<title>正四面体の「デッサン割り」ゲーム・アニメーター動画マン体験</title>
+<style>
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);--bg:#f4f1ea;--fg:#222;--card:#fff;--mut:#666;--ac:#2b6cb0;--bd:#d8d3c7}
+html{height:100%;height:100dvh;overflow:hidden;overscroll-behavior:none;scroll-padding-top:env(safe-area-inset-top,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#1b1b1d;--fg:#eee;--card:#2a2a2e;--mut:#aaa;--ac:#7ab7ff;--bd:#444}}
+:root[data-theme="dark"]{--bg:#1b1b1d;--fg:#eee;--card:#2a2a2e;--mut:#aaa;--ac:#7ab7ff;--bd:#444}
+*{-webkit-tap-highlight-color:transparent;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+[hidden]{display:none!important}
+body{margin:0;height:100%;overflow:hidden;overscroll-behavior:none;touch-action:none;background:var(--bg);color:var(--fg);font-family:system-ui,"Hiragino Sans","Noto Sans JP","Apple SD Gothic Neo","Noto Sans KR","PingFang SC","Noto Sans SC","Noto Sans Arabic",sans-serif}
+.wrap{max-width:460px;margin:0 auto;padding:8px 12px;height:100%;box-sizing:border-box;display:flex;flex-direction:column;gap:6px}
+.top{display:flex;align-items:center;gap:8px}
+h1{flex:1;font-size:14px;margin:0;text-align:center;line-height:1.35}
+#langs{gap:4px}
+button.lg{min-width:0;min-height:30px;padding:4px 2px;font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+button.lg.on{background:var(--fg);color:var(--bg);border-color:var(--fg);font-weight:700}
+.btns{display:flex;gap:6px}
+button{flex:1;min-height:36px;padding:6px 4px;border:1px solid var(--bd);background:var(--card);color:var(--fg);border-radius:8px;font-size:13px;touch-action:manipulation;font-family:inherit}
+button:focus-visible{outline:2px solid var(--ac);outline-offset:2px}
+button.press{opacity:.6}
+button.on{background:#f59e0b;color:#222;border-color:#f59e0b;font-weight:700}
+button.ly.on{background:var(--ac);color:#fff;border-color:var(--ac);font-weight:700}
+button.cs{min-height:32px}
+button.cs.on{background:var(--fg);color:var(--bg);border-color:var(--fg);font-weight:700}
+button.main{background:var(--ac);color:#fff;border-color:var(--ac);font-weight:700}
+.tsr{display:flex;align-items:center;gap:10px;font-size:12px;font-weight:700;padding:0 4px}
+.tbar{position:relative;flex:1;height:14px;margin:0 8px}
+.tbar::before{content:"";position:absolute;left:0;right:0;top:6px;height:2px;background:var(--bd)}
+.tbar i{position:absolute;top:1px;width:12px;height:12px;margin-left:-6px;border-radius:50%;box-sizing:border-box}
+.tbar .r{left:0;background:#e5383b}.tbar .b{left:100%;background:#38bdf8}
+.tbar .m{background:#16a34a;border:2px solid var(--card);box-shadow:0 0 0 1px #16a34a;width:12px;height:12px}
+#gv{position:fixed;inset:0;background:rgba(0,0,0,.75);display:flex;align-items:center;justify-content:center;padding:16px;z-index:10}
+.gbox{background:var(--card);border-radius:12px;padding:12px;max-width:440px;width:100%;box-sizing:border-box;display:flex;flex-direction:column;gap:8px}
+.gbox img{width:100%;max-height:60vh;object-fit:contain;background:#111;border-radius:8px;-webkit-touch-callout:default;-webkit-user-select:auto;user-select:auto}
+button.big{min-height:52px;font-size:18px;letter-spacing:.05em;border-radius:12px}
+.msg{font-size:12px;color:var(--mut);margin:0 2px;line-height:1.45}
+.cw{flex:0 0 auto;display:flex;justify-content:center}
+.cv{position:relative}
+canvas{width:100%;height:100%;background:#fff;border-radius:10px;touch-action:none;display:block;border:1px solid var(--bd);box-sizing:border-box}
+.res{background:var(--card);border:1px solid var(--bd);border-radius:10px;padding:6px 10px;display:none;font-size:13px;line-height:1.4}
+.res b{font-size:22px}
+.res .msg{margin:2px 0 0}
+.tag{display:inline-block;background:var(--ac);color:#fff;border-radius:4px;padding:0 6px;font-size:12px;margin-inline-end:6px;vertical-align:middle}
+</style></head><body><div class="wrap">
+<div class="top"><h1 data-i="title"></h1></div>
+<div class="btns" id="langs" role="group" aria-label="Language"></div>
+<div class="btns"><button class="cs on" id="k0" data-i="c0"></button><button class="cs" id="k1" data-i="c1"></button><button class="cs" id="k2" data-i="c2"></button></div>
+<div class="msg" id="hint"></div>
+<div class="tsr" id="tsume" hidden><span id="tst"></span><div class="tbar"><i class="r"></i><i class="b"></i><i class="m" id="tsm"></i></div></div>
+<div class="cw" id="cw"><div class="cv" id="cv"><canvas id="c"></canvas></div></div>
+<div class="res" id="res"></div>
+<div class="btns" id="lyr"><button class="ly on" id="l0" data-i="l0"></button><button class="ly" id="l1" data-i="l1"></button></div>
+<div class="btns" id="plr" hidden><button id="pl" class="main big"></button></div>
+<div class="btns"><button id="hb"></button><button id="undo" data-i="undo"></button><button id="clr" data-i="clr"></button></div>
+<div class="btns"><button id="go" class="main" data-i="go"></button><button id="gif" data-i="gif" hidden></button><button id="nx" data-i="nx"></button></div>
+</div>
+<div id="gv" hidden><div class="gbox"><img id="gimg" alt="GIF"><div class="msg" data-i="gmsg"></div><div class="btns"><button id="gsave" class="main" data-i="gsave"></button><button id="gclose" data-i="gclose"></button></div></div></div>
+<script>
+const W=440,H=320,CX=W/2,CY=H/2,S=62,D=700;
+/* 上級にもツメ指示を付ける場合 true／大きさの変化だけにする場合 false */
+const ADV_TSUME=true;
+const FONT='system-ui,"Hiragino Sans","Noto Sans JP","Apple SD Gothic Neo","Noto Sans KR","PingFang SC","Noto Sans SC","Noto Sans Arabic",sans-serif';
+
+/* ===== 言語 ===== */
+const I={
+ja:{
+ title:`正四面体の「デッサン割り」ゲーム・アニメーター動画マン体験`,name:`日本語`,gpt:`点`,
+ c0:`初級`,c1:`中級`,c2:`上級`,
+ l0:`①下書き（薄い灰色）`,l1:`②清書（黒・採点対象）`,
+ hb:`ヒント`,hbOff:`ヒントを消す`,undo:`1本戻す`,clr:`この段階を消す`,go:`採点する`,nx:`次の出題`,play:`▶ 再生`,stop:`■ 停止`,gif:`GIF保存`,gifBusy:`書き出し中…`,gtitle:`正四面体「デッサン割り」ゲーム`,gsave:`保存／共有`,gclose:`閉じる`,gmsg:`「保存／共有」を押すか、保存が始まらないときは画像を長押し（PCは右クリック）して保存してください。`,
+ h0:`赤と水色の正四面体の「真ん中のポーズ」を、見える線だけで何本でも描こう。まず①下書き（薄い灰色）、次に②清書（黒）。採点は清書の線だけで行います。☆と△は同じ頂点です（赤→水色へ移動）。`,
+ h1:`「ツメ」は、中割りを片方の原画に寄せて入れる指示です。上のツメ指示どおり、赤寄り／水色寄りのポーズを見える線だけで描こう。まず①下書き、次に②清書（黒・採点対象）。☆と△は同じ頂点です。`,
+ h2:`赤と水色で正四面体の大きさが違います。大きさの変化も考えて、ツメ指示の位置のポーズを描こう。まず①下書き、次に②清書（黒・採点対象）。☆と△は同じ頂点です。`,
+ h2n:`赤と水色で正四面体の大きさが違います。大きさの変化も考えて、真ん中のポーズを描こう。まず①下書き、次に②清書（黒・採点対象）。☆と△は同じ頂点です。`,
+ tsR:`ツメ指示：赤寄り`,tsB:`ツメ指示：水色寄り`,tsM:`ツメ指示：ど真ん中`,
+ noStroke:`②清書（黒）の線がありません。清書の線を引いてから採点しよう。`,
+ rv:`振り返り`,pt:`点　`,
+ cm0:`原画マン拍手！ほぼ完璧`,cm1:`このまま動画チェックを通りそう`,cm2:`あと一歩。直しが入るかも`,cm3:`リテイク。ヒントを見てもう一度ねらってみよう`,
+ qn:`{n}問目`,hu:`・ヒント使用`,
+ note:`緑が正解の正四面体です（{q}）。「▶ 再生」で動きを確認、「GIF保存」で書き出し、「次の出題」で続けます。`
+},
+en:{
+ title:`Tetrahedron "Dessin-wari" Game – Try Being an Animation Inbetweener`,name:`English`,gpt:` pts`,
+ c0:`Beginner`,c1:`Intermediate`,c2:`Advanced`,
+ l0:`① Rough (light gray)`,l1:`② Clean-up (black, scored)`,
+ hb:`Hint`,hbOff:`Hide hint`,undo:`Undo stroke`,clr:`Clear this layer`,go:`Score`,nx:`Next`,play:`▶ Play`,stop:`■ Stop`,gif:`Save GIF`,gifBusy:`Exporting…`,gtitle:`Tetrahedron "Dessin-wari" Game`,gsave:`Save / Share`,gclose:`Close`,gmsg:`Press "Save / Share". If nothing downloads, press and hold the image (or right-click on a computer) to save it.`,
+ h0:`Draw the pose halfway between the red and blue tetrahedra, using visible lines only (as many strokes as you like). Start with ① rough (light gray), then ② clean-up (black). Only clean-up lines are scored. ☆ and △ mark the same vertex (moving from red to blue).`,
+ h1:`"Tsume" tells you to place the in-between closer to one of the two key drawings. Follow the Tsume instruction above and draw the pose closer to red or blue, visible lines only. Rough in ① first, then clean up in ② (scored). ☆ and △ mark the same vertex.`,
+ h2:`The red and blue tetrahedra differ in size. Take the size change into account and draw the pose at the position the Tsume instruction shows. Rough in ①, clean up in ② (scored). ☆ and △ mark the same vertex.`,
+ h2n:`The red and blue tetrahedra differ in size. Take the size change into account and draw the halfway pose. Rough in ①, clean up in ② (scored). ☆ and △ mark the same vertex.`,
+ tsR:`Tsume: closer to RED`,tsB:`Tsume: closer to BLUE`,tsM:`Tsume: dead center`,
+ noStroke:`There are no ② clean-up (black) lines yet. Draw your clean-up lines, then score.`,
+ rv:`Review`,pt:`pts `,
+ cm0:`Key animator applause! Nearly perfect`,cm1:`Looks ready to pass the inbetween check`,cm2:`Almost there. You may get corrections`,cm3:`Retake. Peek at the hint and try again`,
+ qn:`Q{n}`,hu:`, hint used`,
+ note:`Green is the correct tetrahedron ({q}). Press "▶ Play" to check the motion, "Save GIF" to export it, or "Next" to continue.`
+},
+ko:{
+ name:`한국어`,gpt:`점`,
+ title:`정사면체 「데생 나누기」 게임 · 동화맨(인비트위너) 체험`,
+ c0:`초급`,c1:`중급`,c2:`상급`,
+ l0:`① 밑그림 (연한 회색)`,l1:`② 선화 정리 (검정·채점 대상)`,
+ hb:`힌트`,hbOff:`힌트 끄기`,undo:`한 획 취소`,clr:`이 단계 지우기`,go:`채점하기`,nx:`다음 문제`,play:`▶ 재생`,stop:`■ 정지`,gif:`GIF 저장`,gifBusy:`내보내는 중…`,gtitle:`정사면체 「데생 나누기」 게임`,gsave:`저장／공유`,gclose:`닫기`,gmsg:`「저장／공유」를 눌러 주세요. 저장이 시작되지 않으면 이미지를 길게 눌러(PC는 우클릭) 저장하세요.`,
+ h0:`빨간색과 하늘색 정사면체의 '정중앙 포즈'를 보이는 선만으로 몇 줄이든 그려 보세요. 먼저 ① 밑그림(연한 회색), 다음 ② 선화 정리(검정). 채점은 선화 정리의 선만 대상입니다. ☆와 △는 같은 꼭짓점입니다(빨강→하늘색으로 이동).`,
+ h1:`'츠메(ツメ)'는 중간 동화를 한쪽 원화에 가깝게 넣으라는 지시입니다. 위의 츠메 지시대로 빨강 쪽/하늘색 쪽에 가까운 포즈를 보이는 선만으로 그려 보세요. 먼저 ① 밑그림, 다음 ② 선화 정리(검정·채점 대상). ☆와 △는 같은 꼭짓점입니다.`,
+ h2:`빨강과 하늘색 정사면체의 크기가 다릅니다. 크기의 변화도 고려해서 츠메 지시 위치의 포즈를 그려 보세요. 먼저 ① 밑그림, 다음 ② 선화 정리(검정·채점 대상). ☆와 △는 같은 꼭짓점입니다.`,
+ h2n:`빨강과 하늘색 정사면체의 크기가 다릅니다. 크기의 변화도 고려해서 정중앙 포즈를 그려 보세요. 먼저 ① 밑그림, 다음 ② 선화 정리(검정·채점 대상). ☆와 △는 같은 꼭짓점입니다.`,
+ tsR:`츠메 지시: 빨강 쪽`,tsB:`츠메 지시: 하늘색 쪽`,tsM:`츠메 지시: 정중앙`,
+ noStroke:`② 선화 정리(검정) 선이 없습니다. 선을 그린 뒤 채점하세요.`,
+ rv:`결과`,pt:`점 `,
+ cm0:`원화가도 박수! 거의 완벽`,cm1:`이대로 동화 체크를 통과할 듯`,cm2:`한 끗 차이. 수정이 들어올지도`,cm3:`리테이크. 힌트를 보고 다시 도전해 보세요`,
+ qn:`{n}번째 문제`,hu:`・힌트 사용`,
+ note:`초록색이 정답 정사면체입니다({q}). '▶ 재생'으로 움직임을 확인하고, 'GIF 저장'으로 내보내고, '다음 문제'로 계속하세요.`
+},
+zh:{
+ name:`中文`,gpt:`分`,
+ title:`正四面体“素描中割”游戏·体验补间动画师`,
+ c0:`初级`,c1:`中级`,c2:`高级`,
+ l0:`① 草稿（浅灰）`,l1:`② 清稿（黑色·计分）`,
+ hb:`提示`,hbOff:`隐藏提示`,undo:`撤销一笔`,clr:`清除此阶段`,go:`评分`,nx:`下一题`,play:`▶ 播放`,stop:`■ 停止`,gif:`保存GIF`,gifBusy:`导出中…`,gtitle:`正四面体“素描中割”游戏`,gsave:`保存／分享`,gclose:`关闭`,gmsg:`请点击“保存／分享”。若没有开始保存，请长按图片（电脑上右键）进行保存。`,
+ h0:`仅用看得见的线条，画出红色正四面体与浅蓝色正四面体“正中间的姿势”，笔画数不限。先画①草稿（浅灰），再画②清稿（黑色）。只对清稿的线条评分。☆和△是同一个顶点（从红色移动到浅蓝色）。`,
+ h1:`“ツメ”是指示补间画靠近其中一张原画的标记。请按照上方的ツメ指示，仅用看得见的线条画出靠近红色／浅蓝色的姿势。先画①草稿，再画②清稿（黑色·计分）。☆和△是同一个顶点。`,
+ h2:`红色和浅蓝色正四面体的大小不同。请同时考虑大小的变化，画出ツメ指示位置的姿势。先画①草稿，再画②清稿（黑色·计分）。☆和△是同一个顶点。`,
+ h2n:`红色和浅蓝色正四面体的大小不同。请同时考虑大小的变化，画出正中间的姿势。先画①草稿，再画②清稿（黑色·计分）。☆和△是同一个顶点。`,
+ tsR:`ツメ指示：靠近红色`,tsB:`ツメ指示：靠近浅蓝色`,tsM:`ツメ指示：正中间`,
+ noStroke:`还没有②清稿（黑色）的线条。请先画出清稿线条再评分。`,
+ rv:`回顾`,pt:`分 `,
+ cm0:`原画师鼓掌！几乎完美`,cm1:`这样应该能通过动画检查`,cm2:`就差一点。可能会被要求修改`,cm3:`打回重画。看看提示再试一次`,
+ qn:`第{n}题`,hu:`・使用了提示`,
+ note:`绿色是正确的正四面体（{q}）。点击“▶ 播放”确认动作，点击“保存GIF”导出，点击“下一题”继续。`
+},
+fr:{
+ name:`Français`,gpt:` pts`,
+ title:`Tétraèdre « Dessin-wari » – Essayez le métier d’intervalliste`,
+ c0:`Débutant`,c1:`Intermédiaire`,c2:`Avancé`,
+ l0:`① Esquisse (gris clair)`,l1:`② Mise au propre (noir, notée)`,
+ hb:`Indice`,hbOff:`Masquer l’indice`,undo:`Annuler un trait`,clr:`Effacer cette étape`,go:`Noter`,nx:`Suivant`,play:`▶ Lecture`,stop:`■ Arrêt`,gif:`Enregistrer le GIF`,gifBusy:`Export…`,gtitle:`Tétraèdre « Dessin-wari »`,gsave:`Enregistrer / Partager`,gclose:`Fermer`,gmsg:`Appuyez sur « Enregistrer / Partager ». Si rien ne se télécharge, maintenez le doigt sur l’image (ou clic droit sur ordinateur) pour l’enregistrer.`,
+ h0:`Dessinez la pose à mi-chemin entre les tétraèdres rouge et bleu, uniquement avec les lignes visibles (autant de traits que vous voulez). Commencez par ① l’esquisse (gris clair), puis ② la mise au propre (noir). Seules les lignes de la mise au propre sont notées. ☆ et △ marquent le même sommet (de rouge vers bleu).`,
+ h1:`Le « Tsume » indique de placer l’intervalle plus près de l’un des deux dessins clés. Suivez l’indication Tsume ci-dessus et dessinez la pose plus proche du rouge ou du bleu, lignes visibles uniquement. D’abord ① l’esquisse, puis ② la mise au propre (noir, notée). ☆ et △ marquent le même sommet.`,
+ h2:`Les tétraèdres rouge et bleu n’ont pas la même taille. Tenez compte du changement de taille et dessinez la pose à la position indiquée par le Tsume. ① Esquisse, puis ② mise au propre (noir, notée). ☆ et △ marquent le même sommet.`,
+ h2n:`Les tétraèdres rouge et bleu n’ont pas la même taille. Tenez compte du changement de taille et dessinez la pose à mi-chemin. ① Esquisse, puis ② mise au propre (noir, notée). ☆ et △ marquent le même sommet.`,
+ tsR:`Tsume : plus près du ROUGE`,tsB:`Tsume : plus près du BLEU`,tsM:`Tsume : pile au milieu`,
+ noStroke:`Aucune ligne de ② mise au propre (noir) pour l’instant. Tracez-les, puis notez.`,
+ rv:`Bilan`,pt:`pts `,
+ cm0:`Applaudissements du chef animateur ! Presque parfait`,cm1:`Ça devrait passer le contrôle des intervalles`,cm2:`Presque. Des corrections sont possibles`,cm3:`À refaire. Regardez l’indice et réessayez`,
+ qn:`Q{n}`,hu:`, indice utilisé`,
+ note:`Le vert est le tétraèdre correct ({q}). Appuyez sur « ▶ Lecture » pour vérifier le mouvement, sur « Enregistrer le GIF » pour l’exporter, ou sur « Suivant » pour continuer.`
+},
+es:{
+ name:`Español`,gpt:` pts`,
+ title:`Tetraedro «Dessin-wari» – Prueba a ser intercalador de animación`,
+ c0:`Principiante`,c1:`Intermedio`,c2:`Avanzado`,
+ l0:`① Boceto (gris claro)`,l1:`② Entintado (negro, puntuado)`,
+ hb:`Pista`,hbOff:`Ocultar pista`,undo:`Deshacer trazo`,clr:`Borrar esta fase`,go:`Puntuar`,nx:`Siguiente`,play:`▶ Reproducir`,stop:`■ Detener`,gif:`Guardar GIF`,gifBusy:`Exportando…`,gtitle:`Tetraedro «Dessin-wari»`,gsave:`Guardar / Compartir`,gclose:`Cerrar`,gmsg:`Pulsa «Guardar / Compartir». Si no se descarga nada, mantén pulsada la imagen (o clic derecho en el ordenador) para guardarla.`,
+ h0:`Dibuja la pose intermedia entre los tetraedros rojo y azul, solo con las líneas visibles (todos los trazos que quieras). Empieza con ① boceto (gris claro) y luego ② entintado (negro). Solo se puntúan las líneas del entintado. ☆ y △ marcan la mismo vértice (de rojo a azul).`,
+ h1:`El «Tsume» indica colocar el intermedio más cerca de uno de los dos dibujos clave. Sigue la indicación Tsume de arriba y dibuja la pose más cercana al rojo o al azul, solo con líneas visibles. Primero ① boceto y luego ② entintado (negro, puntuado). ☆ y △ marcan la mismo vértice.`,
+ h2:`Los tetraedros rojo y azul tienen distinto tamaño. Ten en cuenta el cambio de tamaño y dibuja la pose en la posición que indica el Tsume. ① Boceto y ② entintado (negro, puntuado). ☆ y △ marcan la mismo vértice.`,
+ h2n:`Los tetraedros rojo y azul tienen distinto tamaño. Ten en cuenta el cambio de tamaño y dibuja la pose intermedia. ① Boceto y ② entintado (negro, puntuado). ☆ y △ marcan la mismo vértice.`,
+ tsR:`Tsume: más cerca del ROJO`,tsB:`Tsume: más cerca del AZUL`,tsM:`Tsume: justo en el medio`,
+ noStroke:`Todavía no hay líneas en ② entintado (negro). Dibújalas y luego puntúa.`,
+ rv:`Resultado`,pt:`pts `,
+ cm0:`¡Aplauso del animador clave! Casi perfecto`,cm1:`Parece que pasaría la revisión de intercalado`,cm2:`Casi. Puede que te pidan correcciones`,cm3:`Repetir. Echa un vistazo a la pista e inténtalo de nuevo`,
+ qn:`P{n}`,hu:`, pista usada`,
+ note:`El verde es el tetraedro correcto ({q}). Pulsa «▶ Reproducir» para ver el movimiento, «Guardar GIF» para exportarlo o «Siguiente» para continuar.`
+},
+ar:{
+ name:`العربية`,gpt:` نقطة`,rtl:1,
+ title:`لعبة رباعي الأوجه «Dessin-wari» – جرّب أن تكون رسّام الإطارات الوسيطة`,
+ c0:`مبتدئ`,c1:`متوسط`,c2:`متقدم`,
+ l0:`① المسودة (رمادي فاتح)`,l1:`② تنظيف الخطوط (أسود، يُحتسب)`,
+ hb:`تلميح`,hbOff:`إخفاء التلميح`,undo:`تراجع عن خط`,clr:`مسح هذه المرحلة`,go:`تقييم`,nx:`التالي`,play:`▶ تشغيل`,stop:`■ إيقاف`,gif:`حفظ GIF`,gifBusy:`جارٍ التصدير…`,gtitle:`لعبة رباعي الأوجه «Dessin-wari»`,gsave:`حفظ / مشاركة`,gclose:`إغلاق`,gmsg:`اضغط «حفظ / مشاركة». إذا لم يبدأ الحفظ، فاضغط مطولاً على الصورة (أو انقر بزر الفأرة الأيمن على الكمبيوتر) لحفظها.`,
+ h0:`ارسم الوضعية التي تقع في منتصف المسافة بين رباعي الأوجه الأحمر والأزرق مستخدماً الخطوط المرئية فقط (بأي عدد من الخطوط). ابدأ بـ ① المسودة (رمادي فاتح) ثم ② تنظيف الخطوط (أسود). يُحتسب التقييم على خطوط التنظيف فقط. ☆ و△ يمثلان الرأس نفسه (من الأحمر إلى الأزرق).`,
+ h1:`«Tsume» يعني وضع الإطار الوسيط أقرب إلى أحد الرسمين الرئيسيين. اتبع تعليمات Tsume أعلاه وارسم الوضعية الأقرب إلى الأحمر أو الأزرق بالخطوط المرئية فقط. ابدأ بـ ① المسودة ثم ② تنظيف الخطوط (أسود، يُحتسب). ☆ و△ يمثلان الرأس نفسه.`,
+ h2:`حجما رباعيي الأوجه الأحمر والأزرق مختلفان. راعِ تغيّر الحجم وارسم الوضعية في الموضع الذي يحدده Tsume. ① المسودة ثم ② تنظيف الخطوط (أسود، يُحتسب). ☆ و△ يمثلان الرأس نفسه.`,
+ h2n:`حجما رباعيي الأوجه الأحمر والأزرق مختلفان. راعِ تغيّر الحجم وارسم الوضعية التي في المنتصف. ① المسودة ثم ② تنظيف الخطوط (أسود، يُحتسب). ☆ و△ يمثلان الرأس نفسه.`,
+ tsR:`Tsume: أقرب إلى الأحمر`,tsB:`Tsume: أقرب إلى الأزرق`,tsM:`Tsume: في المنتصف تماماً`,
+ noStroke:`لا توجد خطوط في ② تنظيف الخطوط (أسود) بعد. ارسمها ثم قيّم.`,
+ rv:`النتيجة`,pt:`نقطة `,
+ cm0:`تصفيق من رسّام الإطارات الرئيسية! شبه مثالي`,cm1:`يبدو أنه سيجتاز فحص الإطارات الوسيطة`,cm2:`قريب جداً. قد تُطلب تعديلات`,cm3:`إعادة. ألقِ نظرة على التلميح وحاول مرة أخرى`,
+ qn:`السؤال {n}`,hu:`، مع تلميح`,
+ note:`اللون الأخضر هو رباعي الأوجه الصحيح ({q}). اضغط «▶ تشغيل» لمراجعة الحركة، و«حفظ GIF» لتصديره، و«التالي» للمتابعة.`
+}};
+let lang='ja';try{const s=localStorage.getItem('dw-lang');if(s&&I[s])lang=s}catch(_){}
+const T=k=>I[lang][k];
+
+/* ===== 基本 ===== */
+const cv=document.getElementById('c'),$=id=>document.getElementById(id);let ctx=cv.getContext('2d');
+const dpr=Math.min(window.devicePixelRatio||1,3);cv.width=W*dpr;cv.height=H*dpr;ctx.scale(dpr,dpr);
+const R=(a,b)=>a+Math.random()*(b-a),sg=()=>Math.random()<.5?-1:1;
+let q=null,strokes=[],drafts=[],layer=0,dl=0,drawing=false,hint=false,result=false,n=0,course=0,rs=null;
+let playing=false,pf=0,raf=0,t0=0,pid=null,ptype='';
+
+/* ===== 立方体 ===== */
+function rot(p,y,x,z){let[a,b,c]=p,t;t=a*Math.cos(y)+c*Math.sin(y);c=-a*Math.sin(y)+c*Math.cos(y);a=t;t=b*Math.cos(x)-c*Math.sin(x);c=b*Math.sin(x)+c*Math.cos(x);b=t;t=a*Math.cos(z)-b*Math.sin(z);b=a*Math.sin(z)+b*Math.cos(z);a=t;return[a,b,c]}
+function build(p){const k=S*(p.s||1)*.92,B=[[1,1,1],[1,-1,-1],[-1,1,-1],[-1,-1,1]],V=[],P=[];
+ B.forEach(b=>{const r=rot(b.map(v=>v*k),p.y,p.x,p.z),w=[r[0]+p.tx,r[1]+p.ty,r[2]+D];V.push(w);P.push([CX+D*w[0]/w[2],CY+D*w[1]/w[2]])});
+ /* 面 i は頂点 i の向かい側。外向き法線 = -頂点方向。法線・カメラ向きで表裏を判定 */
+ const fr=B.map(b=>{const nn=rot(b.map(v=>-v/1.732),p.y,p.x,p.z),c=rot(b.map(v=>-v*k/3),p.y,p.x,p.z),w=[c[0]+p.tx,c[1]+p.ty,c[2]+D];return nn[0]*w[0]+nn[1]*w[1]+nn[2]*w[2]<0});
+ const E=[];for(let i=0;i<4;i++)for(let j=i+1;j<4;j++){const o=[0,1,2,3].filter(m=>m!==i&&m!==j);E.push({a:P[i],b:P[j],vis:fr[o[0]]||fr[o[1]]})}
+ return{P,E,vv:V.map((_,i)=>fr.some((f,j)=>j!==i&&f))}}
+const ok=o=>o.P.every(p=>p[0]>30&&p[0]<W-30&&p[1]>30&&p[1]<H-30);
+
+/* 初級：真ん中／中級：ツメ指示あり／上級：大きさが変わる（＋ツメ指示） */
+function gen(){const tsu=course===1||(course===2&&ADV_TSUME),adv=course===2;let r;for(let t=0;t<300;t++){
+ const y0=R(-1,1),dy=R(.5,1.1)*sg(),x0=R(.25,.6)*sg(),dx=R(-.25,.25),z0=R(-.2,.2),dz=R(-.15,.15),tx=R(20,45)*sg(),ty=R(-15,15);
+ const tt=tsu?(adv?[1/3,.5,2/3][Math.floor(Math.random()*3)]:(Math.random()<.5?1/3:2/3)):.5;
+ let sA=1,sB=1;if(adv){const sm=R(.72,.88),bg=R(1.12,1.25);if(Math.random()<.5){sA=sm;sB=bg}else{sA=bg;sB=sm}}
+ const A=build({y:y0,x:x0,z:z0,tx:-tx,ty:-ty,s:sA}),B=build({y:y0+dy,x:x0+dx,z:z0+dz,tx,ty,s:sB}),
+ M=build({y:y0+dy*tt,x:x0+dx*tt,z:z0+dz*tt,tx:-tx+2*tx*tt,ty:-ty+2*ty*tt,s:sA+(sB-sA)*tt});
+ r={A,B,M,t:tt,tsu};if(ok(A)&&ok(B)&&ok(M))break}
+ let c=[0,1,2,3].filter(i=>r.A.vv[i]&&r.B.vv[i]);if(c.length<2)c=[0,1,2,3].filter(i=>r.A.vv[i]);
+ c.sort(()=>Math.random()-.5);r.k=[c[0],c[1]];return r}
+
+/* ===== 描画 ===== */
+function seg(a,b,col,w,dash){ctx.beginPath();ctx.moveTo(a[0],a[1]);ctx.lineTo(b[0],b[1]);ctx.strokeStyle=col;ctx.lineWidth=w;ctx.setLineDash(dash||[]);ctx.lineCap='round';ctx.stroke();ctx.setLineDash([])}
+function cube(o,col,w,showHidden,hcol){o.E.forEach(e=>{if(e.vis)seg(e.a,e.b,col,w);else if(showHidden)seg(e.a,e.b,hcol||col,1.5,[5,5])})}
+function mark(o,i,kind,col){const c=o.P.reduce((s,p)=>[s[0]+p[0]/4,s[1]+p[1]/4],[0,0]),p=o.P[i];let dx=p[0]-c[0],dy=p[1]-c[1];const l=Math.hypot(dx,dy)||1,x=p[0]+dx/l*15,y=p[1]+dy/l*15;
+ ctx.beginPath();if(kind===0){for(let j=0;j<10;j++){const a=-Math.PI/2+j*Math.PI/5,r=j%2?4:9;ctx.lineTo(x+Math.cos(a)*r,y+Math.sin(a)*r)}}else{for(let j=0;j<3;j++){const a=-Math.PI/2+j*2*Math.PI/3;ctx.lineTo(x+Math.cos(a)*9,y+Math.sin(a)*9)}}
+ ctx.closePath();ctx.fillStyle='#fff';ctx.fill();ctx.strokeStyle=col;ctx.lineWidth=2;ctx.setLineDash([]);ctx.stroke()}
+function userLines(L,col,w){L.forEach(s=>{ctx.beginPath();s.forEach((p,i)=>i?ctx.lineTo(p[0],p[1]):ctx.moveTo(p[0],p[1]));ctx.strokeStyle=col;ctx.lineWidth=w;ctx.setLineDash([]);ctx.lineCap='round';ctx.lineJoin='round';ctx.stroke()})}
+function draw(){if(playing){drawPlay();return}
+ ctx.clearRect(0,0,W,H);ctx.strokeStyle='#eee';ctx.lineWidth=1;ctx.setLineDash([]);for(let x=0;x<=W;x+=40){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,H);ctx.stroke()}for(let y=0;y<=H;y+=40){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(W,y);ctx.stroke()}
+ const{A,B,M,k}=q;
+ if(hint){M.E.forEach(e=>{if(!e.vis)seg(e.a,e.b,'#9ca3af',1.5,[4,5])});M.P.forEach((p,i)=>{ctx.beginPath();ctx.arc(p[0],p[1],5,0,7);ctx.fillStyle=M.vv[i]?'#16a34a':'#fff';ctx.fill();ctx.strokeStyle='#16a34a';ctx.lineWidth=2;ctx.stroke()})}
+ cube(A,'#e5383b',2.5,hint,'#f5a3a6');cube(B,'#38bdf8',2.5,hint,'#a5dcf6');
+ if(result){cube(M,'#16a34a',2.5,true,'#86c99a');mark(M,k[0],0,'#16a34a');mark(M,k[1],1,'#16a34a')}
+ userLines(drafts,'#b8b8b8',2);userLines(strokes,'#111',3);
+ mark(A,k[0],0,'#e5383b');mark(A,k[1],1,'#e5383b');mark(B,k[0],0,'#0ea5e9');mark(B,k[1],1,'#0ea5e9')}
+
+/* ===== 振り返り再生：赤→描いた→水色→描いた→赤…（24fps・3コマ打ち・白線） ===== */
+function drawPlay(f=pf){ctx.setLineDash([]);ctx.fillStyle='#111';ctx.fillRect(0,0,W,H);
+ if(f===0)cube(q.A,'#fff',2.5,false);else if(f===2)cube(q.B,'#fff',2.5,false);else userLines(strokes,'#fff',3)}
+function loop(now){if(!playing)return;const f=Math.floor(Math.max(0,now-t0)/(3000/24))%4;if(f!==pf){pf=f;drawPlay()}raf=requestAnimationFrame(loop)}
+function startPlay(){if(!result||playing)return;playing=true;pf=0;t0=performance.now();$('res').style.visibility='hidden';$('pl').textContent=T('stop');drawPlay();raf=requestAnimationFrame(loop)}
+function stopPlay(){if(!playing)return;playing=false;cancelAnimationFrame(raf);$('res').style.visibility='';$('pl').textContent=T('play');draw()}
+
+/* ===== GIF書き出し（外部ライブラリなし・24fpsの3コマ打ち＝0.125秒） ===== */
+let gifBusy=false,gifBlob=null,gifUrl='';
+function saveGif(){if(!gifBlob)return;
+ try{const f=new File([gifBlob],'tetrahedron-dessin-wari.gif',{type:'image/gif'});
+  if(matchMedia('(pointer:coarse)').matches&&navigator.canShare&&navigator.canShare({files:[f]})){navigator.share({files:[f]}).catch(()=>{});return}}catch(_){}
+ const a=document.createElement('a');a.href=gifUrl;a.download='tetrahedron-dessin-wari.gif';document.body.appendChild(a);a.click();a.remove()}
+function closeGif(){$('gv').hidden=true;$('gimg').removeAttribute('src')}
+function lzw(idx,mc){const clear=1<<mc,eoi=clear+1,out=[];let cur=0,cb=0,bits=mc+1,next=eoi+1,dict=new Map();
+ const emit=c=>{cur|=c<<cb;cb+=bits;while(cb>=8){out.push(cur&255);cur>>=8;cb-=8}};
+ emit(clear);let p=idx[0];
+ for(let i=1;i<idx.length;i++){const k=idx[i],key=p*256+k,v=dict.get(key);
+  if(v!==undefined){p=v;continue}
+  emit(p);
+  if(next<4096){const c=next++;dict.set(key,c);if(c===(1<<bits))bits++}
+  else{emit(clear);dict=new Map();bits=mc+1;next=eoi+1}
+  p=k}
+ emit(p);emit(eoi);if(cb>0)out.push(cur&255);return out}
+const FOOT=56;let gifStamp='';
+function stampNow(){const d=new Date(),p=v=>String(v).padStart(2,'0'),hm=p(d.getHours())+':'+p(d.getMinutes()),y=d.getFullYear(),m=d.getMonth()+1,dd=d.getDate();
+ if(lang==='ja'||lang==='zh')return y+'年'+m+'月'+dd+'日 '+hm;
+ if(lang==='ko')return y+'년 '+m+'월 '+dd+'일 '+hm;
+ return y+'-'+p(m)+'-'+p(dd)+' '+hm}
+function gifBox(){let a=1e9,b=1e9,c=-1e9,d=-1e9;const add=p=>{a=Math.min(a,p[0]);c=Math.max(c,p[0]);b=Math.min(b,p[1]);d=Math.max(d,p[1])};
+ [q.A,q.B].forEach(o=>o.E.forEach(e=>{if(e.vis){add(e.a);add(e.b)}}));strokes.forEach(s=>s.forEach(add));
+ const m=24,bw=Math.min(W,Math.max(Math.ceil(c-a+2*m),300)),bh=Math.min(H,Math.ceil(d-b+2*m));
+ return{x:Math.round(Math.max(0,Math.min(W-bw,(a+c)/2-bw/2))),y:Math.round(Math.max(0,Math.min(H-bh,(b+d)/2-bh/2))),w:bw,h:bh}}
+function drawFoot(bw,bh){ctx.setLineDash([]);ctx.fillStyle='#111';ctx.fillRect(0,bh,bw,FOOT);
+ ctx.strokeStyle='#555';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(16,bh+.5);ctx.lineTo(bw-16,bh+.5);ctx.stroke();
+ ctx.textBaseline='middle';ctx.fillStyle='#fff';ctx.textAlign='center';ctx.font='bold 15px '+FONT;ctx.fillText(T('gtitle'),bw/2,bh+17);
+ ctx.textAlign='left';ctx.font='bold 18px '+FONT;ctx.fillText(rs.s+T('gpt'),16,bh+40);
+ ctx.textAlign='right';ctx.font='13px '+FONT;ctx.fillStyle='#ccc';ctx.fillText(gifStamp,bw-16,bh+40)}
+function frameIdx(f,sc,bx){const oc=document.createElement('canvas');oc.width=bx.w*sc;oc.height=(bx.h+FOOT)*sc;const sv=ctx;let d;
+ try{ctx=oc.getContext('2d');ctx.save();ctx.scale(sc,sc);ctx.translate(-bx.x,-bx.y);drawPlay(f);ctx.restore();ctx.scale(sc,sc);drawFoot(bx.w,bx.h);d=ctx.getImageData(0,0,oc.width,oc.height).data}finally{ctx=sv}
+ const o=new Uint8Array(oc.width*oc.height);for(let i=0;i<o.length;i++){const v=Math.round((d[i*4]-17)/238*31);o[i]=v<0?0:v>31?31:v}return o}
+function exportGif(){if(!result||gifBusy)return;gifBusy=true;$('gif').textContent=T('gifBusy');
+ setTimeout(()=>{try{
+  gifStamp=stampNow();
+  const bx=gifBox(),sc=2,w=bx.w*sc,h=(bx.h+FOOT)*sc,fr=[0,1,2].map(f=>lzw(frameIdx(f,sc,bx),5)),seq=[0,1,2,1],dl=[12,13,12,13],b=[];
+  const u16=v=>b.push(v&255,(v>>8)&255),str=s=>{for(const c of s)b.push(c.charCodeAt(0))};
+  str('GIF89a');u16(w);u16(h);b.push(0xF4,0,0);
+  for(let i=0;i<32;i++){const g=Math.round(17+238*i/31);b.push(g,g,g)}
+  b.push(0x21,0xFF,0x0B);str('NETSCAPE2.0');b.push(3,1,0,0,0);
+  seq.forEach((s,j)=>{b.push(0x21,0xF9,4,0x04);u16(dl[j]);b.push(0,0,0x2C);u16(0);u16(0);u16(w);u16(h);b.push(0,5);
+   const d=fr[s];for(let i=0;i<d.length;i+=255){const c=d.slice(i,i+255);b.push(c.length);for(const x of c)b.push(x)}b.push(0)});
+  b.push(0x3B);
+  gifBlob=new Blob([Uint8Array.from(b)],{type:'image/gif'});if(gifUrl)URL.revokeObjectURL(gifUrl);gifUrl=URL.createObjectURL(gifBlob);
+  $('gimg').src=gifUrl;$('gv').hidden=false;
+ }catch(err){console.error(err)}
+ gifBusy=false;$('gif').textContent=T('gif')},30)}
+
+/* ===== 描画スペースの入力（ペン・指・マウス共通） ===== */
+const pt=e=>{const r=cv.getBoundingClientRect();return[(e.clientX-r.left)*W/r.width,(e.clientY-r.top)*H/r.height]};
+const cur=l=>l?strokes:drafts;
+cv.addEventListener('pointerdown',e=>{e.preventDefault();if(result||playing)return;
+ if(e.pointerType==='touch'&&Math.max(e.width||0,e.height||0)>80)return; /* 手のひらなど大きな接触は無視 */
+ if(drawing){if(e.pointerType==='pen'&&ptype!=='pen')endStroke();else return} /* 描画中の別の接触は無視（ペン優先） */
+ try{cv.setPointerCapture(e.pointerId)}catch(_){}
+ pid=e.pointerId;ptype=e.pointerType;dl=layer;cur(dl).push([pt(e)]);drawing=true;draw()});
+window.addEventListener('pointermove',e=>{if(!drawing||e.pointerId!==pid)return;e.preventDefault();
+ const s=cur(dl)[cur(dl).length-1],ev=e.getCoalescedEvents?e.getCoalescedEvents():[];(ev.length?ev:[e]).forEach(x=>s.push(pt(x)));draw()});
+/* Apple Pencil の予備入力：ポインタイベントが来ないスタイラスだけ、タッチイベントで描く */
+let penPtr=false,tid=null;
+cv.addEventListener('pointerdown',e=>{if(e.pointerType==='pen')penPtr=true},true);
+const stl=(l,id)=>[...l].find(t=>id===null?t.touchType==='stylus':t.identifier===id);
+cv.addEventListener('touchstart',e=>{const t=stl(e.changedTouches,null);if(!t||penPtr||result||playing||drawing)return;e.preventDefault();tid=t.identifier;ptype='pen';dl=layer;cur(dl).push([pt(t)]);drawing=true;draw()},{passive:false});
+cv.addEventListener('touchmove',e=>{if(tid===null)return;const t=stl(e.changedTouches,tid);if(!t)return;e.preventDefault();const s=cur(dl)[cur(dl).length-1];s.push(pt(t));draw()},{passive:false});
+['touchend','touchcancel'].forEach(n=>cv.addEventListener(n,e=>{if(tid!==null&&stl(e.changedTouches,tid)){tid=null;endStroke()}}));
+function endStroke(){if(!drawing)return;drawing=false;pid=null;ptype='';const L=cur(dl);if(L.length&&L[L.length-1].length<3)L.pop();draw()}
+['pointerup','pointercancel'].forEach(t=>window.addEventListener(t,e=>{if(drawing&&e.pointerId===pid)endStroke()}));
+
+/* ===== 描画スペース以外は何も反応させない（スクロール・拡大・選択・長押しメニューなど） ===== */
+const onGif=e=>e.target.closest&&e.target.closest('#gimg,#c');
+document.addEventListener('touchstart',e=>{if(!onGif(e))e.preventDefault()},{passive:false});
+document.addEventListener('touchmove',e=>{if(!onGif(e))e.preventDefault()},{passive:false});
+['gesturestart','gesturechange','gestureend','contextmenu','dragstart','selectstart'].forEach(t=>document.addEventListener(t,e=>{if(!onGif(e))e.preventDefault()}));
+
+/* ===== ボタン：指でもペン先でもマウスでも反応（離した位置がボタン付近なら実行） ===== */
+function bind(el,fn){let id=null;
+ const inside=e=>{const r=el.getBoundingClientRect(),m=8;return e.clientX>=r.left-m&&e.clientX<=r.right+m&&e.clientY>=r.top-m&&e.clientY<=r.bottom+m};
+ el.addEventListener('pointerdown',e=>{e.preventDefault();if(drawing&&e.pointerType==='touch')return;id=e.pointerId;el.classList.add('press')});
+ el.addEventListener('pointerup',e=>{const hit=id===e.pointerId&&inside(e);id=null;el.classList.remove('press');if(hit&&!(drawing&&e.pointerType==='touch'))fn()});
+ el.addEventListener('pointercancel',()=>{id=null;el.classList.remove('press')});
+ el.addEventListener('pointerleave',e=>{if(e.pointerType==='mouse'){id=null;el.classList.remove('press')}});
+ el.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();fn()}});
+ el.addEventListener('click',e=>e.preventDefault())}
+
+/* ===== 採点 ===== */
+function samp(pts,step){const o=[];for(let i=1;i<pts.length;i++){const a=pts[i-1],b=pts[i],l=Math.hypot(b[0]-a[0],b[1]-a[1]),m=Math.max(1,Math.ceil(l/step));for(let j=0;j<=m;j++)o.push([a[0]+(b[0]-a[0])*j/m,a[1]+(b[1]-a[1])*j/m])}return o}
+const near=(p,L)=>{let m=1e9;for(const r of L){const d=(p[0]-r[0])**2+(p[1]-r[1])**2;if(d<m)m=d}return Math.sqrt(m)};
+const cred=d=>Math.exp(-Math.pow(d/14,2));
+function score(){
+ if(!strokes.length){rs={none:1};renderRes();return}
+ const ans=[];q.M.E.forEach(e=>{if(e.vis)ans.push(...samp([e.a,e.b],3))});
+ const us=[];strokes.forEach(s=>us.push(...samp(s,3)));
+ const rec=ans.reduce((s,p)=>s+cred(near(p,us)),0)/ans.length,pre=us.reduce((s,p)=>s+cred(near(p,ans)),0)/us.length;
+ const s=Math.round(100*2*rec*pre/(rec+pre+1e-9));
+ result=true;n++;rs={s,n,hint};syncBtns();draw();renderRes()}
+function renderRes(){const r=$('res');if(!rs){r.style.display='none';return}r.style.display='block';
+ if(rs.none){r.textContent=T('noStroke');return}
+ const c=T(rs.s>=90?'cm0':rs.s>=75?'cm1':rs.s>=55?'cm2':'cm3'),qs=T('qn').replace('{n}',rs.n)+(rs.hint?T('hu'):'');
+ r.innerHTML='<div><span class="tag">'+T('rv')+'</span><b>'+rs.s+'</b> '+T('pt')+c+'</div><div class="msg">'+T('note').replace('{q}',qs)+'</div>'}
+
+/* ===== 画面の状態 ===== */
+function syncBtns(){$('go').hidden=result;$('gif').hidden=!result;$('lyr').hidden=result;$('plr').hidden=!result;$('pl').textContent=T(playing?'stop':'play')}
+function tsumeUI(){const e=$('tsume'),on=!!(q&&q.tsu);e.hidden=!on;if(on){$('tst').textContent=T(q.t<.49?'tsR':q.t>.51?'tsB':'tsM');$('tsm').style.left=(q.t*100)+'%'}}
+function hintMsg(){$('hint').textContent=T(['h0','h1',ADV_TSUME?'h2':'h2n'][course])}
+function hbLabel(){$('hb').textContent=T(hint?'hbOff':'hb')}
+function apply(){document.documentElement.lang=lang;document.title=T('title');
+ document.documentElement.dir='ltr';
+ const rtl=I[lang].rtl?'rtl':'ltr';document.querySelectorAll('h1,.msg,#res,#tst').forEach(el=>el.dir=rtl);
+ document.querySelectorAll('[data-i]').forEach(el=>el.textContent=T(el.dataset.i));
+ document.querySelectorAll('#langs button').forEach(b=>{const on=b.dataset.l===lang;b.classList.toggle('on',on);b.setAttribute('aria-pressed',on)});hbLabel();syncBtns();hintMsg();tsumeUI();renderRes();if(q)draw()}
+function setLang(l){lang=l;try{localStorage.setItem('dw-lang',l)}catch(_){}apply()}
+function setLayer(l){layer=l;$('l0').classList.toggle('on',!l);$('l1').classList.toggle('on',!!l)}
+function start(){stopPlay();q=gen();strokes=[];drafts=[];setLayer(0);result=false;drawing=false;pid=null;hint=false;rs=null;
+ $('hb').classList.remove('on');hbLabel();syncBtns();$('res').style.display='none';hintMsg();tsumeUI();draw()}
+function setCourse(c){if(c===course)return;course=c;n=0;[0,1,2].forEach(i=>$('k'+i).classList.toggle('on',i===c));start()}
+
+Object.keys(I).forEach(k=>{const b=document.createElement('button');b.className='lg';b.dataset.l=k;b.textContent=I[k].name;b.lang=k;$('langs').appendChild(b);bind(b,()=>setLang(k))});
+[0,1,2].forEach(i=>bind($('k'+i),()=>setCourse(i)));
+bind($('l0'),()=>setLayer(0));bind($('l1'),()=>setLayer(1));
+bind($('hb'),()=>{hint=!hint;$('hb').classList.toggle('on',hint);hbLabel();draw()});
+bind($('undo'),()=>{if(!result&&!drawing){cur(layer).pop();draw()}});
+bind($('clr'),()=>{stopPlay();cur(layer).length=0;result=false;rs=null;syncBtns();$('res').style.display='none';draw()});
+bind($('go'),()=>{if(!result)score()});
+bind($('pl'),()=>{playing?stopPlay():startPlay()});
+bind($('gif'),exportGif);bind($('gsave'),saveGif);bind($('gclose'),closeGif);
+bind($('nx'),start);
+
+/* ===== 画面に収める（スクロール不要） ===== */
+/* 描画スペースは上に詰めて配置：他の行の高さを引いた残りに収まる大きさにする */
+function fit(){const w=document.querySelector('.wrap'),cs=getComputedStyle(w),pad=parseFloat(cs.paddingTop)+parseFloat(cs.paddingBottom),gap=parseFloat(cs.rowGap)||6,
+ bw=w.clientWidth-parseFloat(cs.paddingLeft)-parseFloat(cs.paddingRight);let used=0,cnt=0;
+ for(const el of w.children){if(el.id==='cw'||!el.offsetHeight)continue;used+=el.offsetHeight;cnt++}
+ const avail=w.clientHeight-pad-used-gap*cnt,k=Math.min(bw/W,avail/H);if(!(k>0))return;
+ const v=$('cv');v.style.width=Math.floor(W*k)+'px';v.style.height=Math.floor(H*k)+'px'}
+if(window.ResizeObserver){const ro=new ResizeObserver(fit);for(const el of document.querySelector('.wrap').children)if(el.id!=='cw')ro.observe(el)}
+window.addEventListener('resize',fit);window.addEventListener('orientationchange',fit);
+
+apply();start();fit();
+</script></body></html>
