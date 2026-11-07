@@ -4,7 +4,7 @@
 <title>正四面体の「デッサン割り」ゲーム・アニメーター動画マン体験</title>
 <style>
 :root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);--bg:#f4f1ea;--fg:#222;--card:#fff;--mut:#666;--ac:#2b6cb0;--bd:#d8d3c7}
-html{height:100%;height:100dvh;overflow:hidden;overscroll-behavior:none;scroll-padding-top:env(safe-area-inset-top,0px)}
+html{height:100%;height:var(--vh,100dvh);overflow:hidden;overscroll-behavior:none;scroll-padding-top:env(safe-area-inset-top,0px)}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#1b1b1d;--fg:#eee;--card:#2a2a2e;--mut:#aaa;--ac:#7ab7ff;--bd:#444}}
 :root[data-theme="dark"]{--bg:#1b1b1d;--fg:#eee;--card:#2a2a2e;--mut:#aaa;--ac:#7ab7ff;--bd:#444}
 *{-webkit-tap-highlight-color:transparent;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
@@ -385,8 +385,12 @@ function fit(){const w=document.querySelector('.wrap'),cs=getComputedStyle(w),pa
  for(const el of w.children){if(el.id==='cw'||!el.offsetHeight)continue;used+=el.offsetHeight;cnt++}
  const avail=w.clientHeight-pad-used-gap*cnt,k=Math.min(bw/W,avail/H);if(!(k>0))return;
  const v=$('cv');v.style.width=Math.floor(W*k)+'px';v.style.height=Math.floor(H*k)+'px'}
-if(window.ResizeObserver){const ro=new ResizeObserver(fit);for(const el of document.querySelector('.wrap').children)if(el.id!=='cw')ro.observe(el)}
-window.addEventListener('resize',fit);window.addEventListener('orientationchange',fit);
+/* アプリ内ブラウザ対策：見えている高さを実測して使い、ツールバーの出入りや読み込み後の変化でも測り直す */
+function setVh(){const vv=window.visualViewport,h=Math.round(vv?vv.height:window.innerHeight);if(h>0)document.documentElement.style.setProperty('--vh',h+'px')}
+function refit(){setVh();fit()}
+if(window.ResizeObserver){const ro=new ResizeObserver(fit);ro.observe(document.documentElement);for(const el of document.querySelector('.wrap').children)if(el.id!=='cw')ro.observe(el)}
+['resize','orientationchange','pageshow','load'].forEach(n=>window.addEventListener(n,refit));
+if(window.visualViewport){visualViewport.addEventListener('resize',refit);visualViewport.addEventListener('scroll',refit)}
 
-apply();start();fit();
+apply();start();refit();[150,500,1500].forEach(t=>setTimeout(refit,t));
 </script></body></html>
